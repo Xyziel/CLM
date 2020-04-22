@@ -32,8 +32,8 @@ public class MeasurementRequest {
         JSONObject jsonObject = new JSONObject();
 
         try {
-            jsonObject.put("longitude", "locationService.getLastLocation().getLongitude()");
-            jsonObject.put("latitude", "locationService.getLastLocation().getLatitude()");
+            jsonObject.put("longitude", locationService.getLocation().getLongitude());
+            jsonObject.put("latitude", locationService.getLocation().getLatitude());
             jsonObject.put("magnitude", mediaRecorderService.getDb());
         } catch (JSONException e) {
             android.util.Log.e("[MAIN]", "JSON Exception: " + android.util.Log.getStackTraceString(e));
