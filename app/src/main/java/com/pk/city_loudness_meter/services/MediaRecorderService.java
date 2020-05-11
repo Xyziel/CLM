@@ -1,7 +1,7 @@
 package com.pk.city_loudness_meter.services;
 
 import android.media.MediaRecorder;
-import android.net.wifi.hotspot2.pps.Credential;
+import android.os.Build;
 
 public class MediaRecorderService {
 
@@ -10,7 +10,13 @@ public class MediaRecorderService {
     public MediaRecorderService()
     {
         recorder = new MediaRecorder();
-        recorder.setAudioSource(MediaRecorder.AudioSource.UNPROCESSED);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            recorder.setAudioSource(MediaRecorder.AudioSource.UNPROCESSED);
+        }
+        else {
+            recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        }
+
         recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB);
         recorder.setOutputFile("/dev/null");
@@ -35,7 +41,7 @@ public class MediaRecorderService {
         if (recorder != null)
             return recorder.getMaxAmplitude();
         else
-            return 0;
+            return 1;
 
     }
 

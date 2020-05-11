@@ -1,13 +1,16 @@
 package com.pk.city_loudness_meter;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.location.LocationServices;
+import com.pk.city_loudness_meter.activities.LoginActivity;
 import com.pk.city_loudness_meter.http.MeasurementRequest;
 import com.pk.city_loudness_meter.services.MediaRecorderService;
 import com.pk.city_loudness_meter.services.LocationService;
@@ -28,11 +31,6 @@ public class MainActivity extends AppCompatActivity {
 
         permissionRequest();
 
-        LocationService locationService = new LocationService(LocationServices.getFusedLocationProviderClient(this));
-        MediaRecorderService mediaRecorderService = new MediaRecorderService();
-        MeasurementRequest measurementService = new MeasurementRequest(mediaRecorderService, new OkHttpClient(), locationService);
-
-        measurementService.send();
     }
 
     private void permissionRequest() {
@@ -49,7 +47,24 @@ public class MainActivity extends AppCompatActivity {
             permissionToInternet = grantResults[2] == PackageManager.PERMISSION_GRANTED;
             permissionToAccessNetwork = grantResults[3] == PackageManager.PERMISSION_GRANTED;
         }
-        if (!permissionToRecordAccepted && !permissionToCourseLocation && !permissionToAccessNetwork && !permissionToInternet)
+        if (!permissionToRecordAccepted && !permissionToCourseLocation && !permissionToAccessNetwork && !permissionToInternet) {
             finish();
+        }
+        else {
+            login();
+        }
+    }
+
+    private void login() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startActivity(intent);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                finish();
+            }
+        }, 2000);
     }
 }
