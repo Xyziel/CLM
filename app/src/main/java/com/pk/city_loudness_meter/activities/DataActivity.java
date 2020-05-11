@@ -12,12 +12,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.pk.city_loudness_meter.R;
+import com.pk.city_loudness_meter.http.MeasurementRequest;
+import com.pk.city_loudness_meter.services.LocationService;
+import com.pk.city_loudness_meter.services.MediaRecorderService;
+import com.pk.city_loudness_meter.util.DeviceUtils;
+
+import okhttp3.OkHttpClient;
 
 public class DataActivity extends AppCompatActivity {
     private GoogleSignInClient googleSignInClient;
+    private MeasurementRequest measurementService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +40,12 @@ public class DataActivity extends AppCompatActivity {
                 .requestEmail()
                 .build();
         googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
+
+        LocationService locationService = new LocationService(LocationServices.getFusedLocationProviderClient(this));
+        MediaRecorderService mediaRecorderService = new MediaRecorderService();
+        DeviceUtils deviceUtils = new DeviceUtils(this);
+        measurementService = new MeasurementRequest(mediaRecorderService, new OkHttpClient(), locationService, deviceUtils);
+        startCollectingData();
     }
 
     private void logout() {
@@ -57,6 +71,11 @@ public class DataActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
+    }
+
+    private void startCollectingData() {
+        measurementService.prepareData();
+        measurementService.sendDataTask();
     }
 
 }
