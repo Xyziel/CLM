@@ -3,7 +3,6 @@ package com.pk.city_loudness_meter.activities;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
@@ -26,7 +25,7 @@ import okhttp3.OkHttpClient;
 public class DataActivity extends AppCompatActivity {
     private GoogleSignInClient googleSignInClient;
     private MeasurementRequest measurementService;
-
+    private MediaRecorderService mediaRecorderService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +41,7 @@ public class DataActivity extends AppCompatActivity {
         googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
 
         LocationService locationService = new LocationService(LocationServices.getFusedLocationProviderClient(this));
-        MediaRecorderService mediaRecorderService = new MediaRecorderService();
+        mediaRecorderService = new MediaRecorderService();
         DeviceUtils deviceUtils = new DeviceUtils(this);
         measurementService = new MeasurementRequest(mediaRecorderService, new OkHttpClient(), locationService, deviceUtils);
         startCollectingData();
@@ -62,6 +61,10 @@ public class DataActivity extends AppCompatActivity {
         SharedPreferences.Editor loginDataEditor = loginData.edit();
         loginDataEditor.putBoolean("loginDataSaved", false);
         loginDataEditor.apply();
+
+        measurementService.stop();
+        mediaRecorderService.stopRecorder();
+
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
@@ -77,5 +80,4 @@ public class DataActivity extends AppCompatActivity {
         measurementService.prepareData();
         measurementService.sendDataTask();
     }
-
 }

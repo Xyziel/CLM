@@ -50,4 +50,7 @@ public class MediaRecorderService {
         return 20 * Math.log10(getAmplitude());
     }
 
+    public void stopRecorder() {
+        recorder.stop();
+    }
 }

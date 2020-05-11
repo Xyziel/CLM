@@ -26,8 +26,10 @@ public class MeasurementRequest {
     private DeviceUtils deviceUtils;
     private JSONArray dataList = new JSONArray();
     private boolean runTask = true;
+    private Timer sendDataTimer, prepareDataTimer;
 
-    private final int SEND_DATA_PERIOD =5 * 60 * 1000;
+
+    private final int SEND_DATA_PERIOD = 5 * 60 * 1000;
     private final int GET_DATA_PERIOD = 3 * 1000;
 
     public MeasurementRequest(MediaRecorderService mediaRecorderService, OkHttpClient okHttpClient, LocationService locationService, DeviceUtils deviceUtils) {
@@ -68,7 +70,8 @@ public class MeasurementRequest {
     }
 
     public void sendDataTask() {
-        new Timer().scheduleAtFixedRate(new TimerTask() {
+        sendDataTimer = new Timer();
+        sendDataTimer .scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 runTask = false;
@@ -82,7 +85,8 @@ public class MeasurementRequest {
     }
 
     public void prepareData() {
-        new Timer().scheduleAtFixedRate(new TimerTask() {
+        prepareDataTimer = new Timer();
+        prepareDataTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 if (runTask && !deviceUtils.isLocked()) {
@@ -95,5 +99,12 @@ public class MeasurementRequest {
 
     private void clearData() {
         dataList = new JSONArray();
+    }
+
+    public void stop() {
+        sendDataTimer.cancel();
+        sendDataTimer.purge();
+        prepareDataTimer.cancel();
+        prepareDataTimer.purge();
     }
 }

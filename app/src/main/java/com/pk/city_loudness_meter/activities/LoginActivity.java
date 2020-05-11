@@ -62,8 +62,6 @@ public class LoginActivity extends AppCompatActivity {
         passwordField = findViewById(R.id.passwordField);
         rememberMeCheckBox = findViewById(R.id.checkBoxRemember);
 
-        rememberMeCheckBox.setChecked(true);
-
         loginButton.setOnClickListener(v -> loginSuccessful());
 
         loginButtonGoogle.setOnClickListener(v -> loginGoogle());
