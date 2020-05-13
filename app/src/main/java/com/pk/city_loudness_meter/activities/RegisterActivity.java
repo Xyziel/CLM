@@ -47,19 +47,11 @@ public class RegisterActivity extends AppCompatActivity {
         passwordField = findViewById(R.id.passwordField);
         confirmPasswordField = findViewById(R.id.confirmPasswordField);
 
-        registerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                register();
-            }
-        });
+//        registerButton.setOnClickListener(v -> register());
+        //for tests
+        registerButton.setOnClickListener(v -> login());
 
-        signIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                login();
-            }
-        });
+        signIn.setOnClickListener(v -> login());
 
     }
 
@@ -115,7 +107,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), data.toString());
         return new Request.Builder()
-                .url("http://192.168.0.105:8080/sign-up")
+                .url("https://cityloudnessmeter.herokuapp.com/sign-up")
                 .post(body)
                 .build();
     }
