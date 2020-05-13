@@ -1,3 +1,20 @@
 <resources>
-    <string name="app_name">city-loudness-meter-android</string>
+    <string name="app_name">City Loudness Meter</string>
+    <string name="appName2">City Loudness\nMeter</string>
+    <string name="login_label">Sign In</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="button_login">Login</string>
+    <string name="google_sign_in">Sign in with Google</string>
+    <string name="or">Or</string>
+    <string name="remember_me">Remember Me</string>
+    <string name="create_new_account"><u>Create new account</u></string>
+
+    <string name="register_label">Sign Up</string>
+    <string name="confirm_password_hint">Confirm Password</string>
+    <string name="button_register">Register</string>
+    <string name="have_account"><u>Already have an account? Sign In!</u></string>
+    <string name="button_logout">Logout</string>
+    <string name="data_activity_info">You have been successfully logged in.\n
+                                        Now your phone is sending data to our database.</string>
 </resources>
