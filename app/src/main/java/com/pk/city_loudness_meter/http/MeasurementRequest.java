@@ -54,7 +54,7 @@ public class MeasurementRequest {
 
     private Request prepareRequest() {
         return new Request.Builder()
-                .url("http://10.0.2.2:8080/api/location")
+                .url("https://cityloudnessmeter.herokuapp.com/api/location")
                 .post(RequestBody.create(dataList.toString(), MediaType.parse("application/json; charset=utf-8")))
                 .addHeader("Content-Type", "application/json")
                 .build();
