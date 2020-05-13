@@ -68,7 +68,10 @@ public class LoginActivity extends AppCompatActivity {
 
         rememberMeCheckBox.setChecked(true);
 
-        loginButton.setOnClickListener(v -> login());
+//        loginButton.setOnClickListener(v -> login());
+
+        //for tests
+        loginButton.setOnClickListener(v -> loginSuccessful());
 
         loginButtonGoogle.setOnClickListener(v -> loginGoogle());
 
@@ -129,7 +132,7 @@ public class LoginActivity extends AppCompatActivity {
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), data.toString());
 
         return new Request.Builder()
-                .url("http://192.168.0.105:8080/login")
+                .url("https://cityloudnessmeter.herokuapp.com/login")
                 .post(body)
                 .build();
     }
