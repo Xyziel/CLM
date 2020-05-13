@@ -3,7 +3,6 @@ package com.pk.city_loudness_meter.activities;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
@@ -12,13 +11,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.pk.city_loudness_meter.R;
+import com.pk.city_loudness_meter.http.MeasurementRequest;
+import com.pk.city_loudness_meter.services.LocationService;
+import com.pk.city_loudness_meter.services.MediaRecorderService;
+import com.pk.city_loudness_meter.util.DeviceUtils;
+
+import okhttp3.OkHttpClient;
 
 public class DataActivity extends AppCompatActivity {
     private GoogleSignInClient googleSignInClient;
-
+    private MeasurementRequest measurementService;
+    private MediaRecorderService mediaRecorderService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +39,12 @@ public class DataActivity extends AppCompatActivity {
                 .requestEmail()
                 .build();
         googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
+
+        LocationService locationService = new LocationService(LocationServices.getFusedLocationProviderClient(this));
+        mediaRecorderService = new MediaRecorderService();
+        DeviceUtils deviceUtils = new DeviceUtils(this);
+        measurementService = new MeasurementRequest(mediaRecorderService, new OkHttpClient(), locationService, deviceUtils);
+        startCollectingData();
     }
 
     private void logout() {
@@ -48,6 +61,10 @@ public class DataActivity extends AppCompatActivity {
         SharedPreferences.Editor loginDataEditor = loginData.edit();
         loginDataEditor.putBoolean("loginDataSaved", false);
         loginDataEditor.apply();
+
+        measurementService.stop();
+        mediaRecorderService.stopRecorder();
+
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
@@ -59,4 +76,8 @@ public class DataActivity extends AppCompatActivity {
         moveTaskToBack(true);
     }
 
+    private void startCollectingData() {
+        measurementService.prepareData();
+        measurementService.sendDataTask();
+    }
 }

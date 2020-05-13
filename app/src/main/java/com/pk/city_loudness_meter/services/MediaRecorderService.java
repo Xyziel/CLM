@@ -41,7 +41,7 @@ public class MediaRecorderService {
         if (recorder != null)
             return recorder.getMaxAmplitude();
         else
-            return 1;
+            return 1.0;
 
     }
 
@@ -50,4 +50,7 @@ public class MediaRecorderService {
         return 20 * Math.log10(getAmplitude());
     }
 
+    public void stopRecorder() {
+        recorder.stop();
+    }
 }

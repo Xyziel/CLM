@@ -14,4 +14,7 @@
     <string name="confirm_password_hint">Confirm Password</string>
     <string name="button_register">Register</string>
     <string name="have_account"><u>Already have an account? Sign In!</u></string>
+    <string name="button_logout">Logout</string>
+    <string name="data_activity_info">You have been successfully logged in.\n
+                                        Now your phone is sending data to our database.</string>
 </resources>

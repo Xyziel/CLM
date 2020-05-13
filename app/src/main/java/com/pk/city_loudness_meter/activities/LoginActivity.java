@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Patterns;
-import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -22,7 +21,6 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.pk.city_loudness_meter.R; //cannot resolve symbol R
-import com.pk.city_loudness_meter.services.MediaRecorderService;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -32,8 +30,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -66,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
         passwordField = findViewById(R.id.passwordField);
         rememberMeCheckBox = findViewById(R.id.checkBoxRemember);
 
-        rememberMeCheckBox.setChecked(true);
+        rememberMeCheckBox.setChecked(false);
 
 //        loginButton.setOnClickListener(v -> login());
 
@@ -146,7 +142,7 @@ public class LoginActivity extends AppCompatActivity {
                 sendPostFailure();
             }
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
                 System.out.println(response.header("Authorization"));
                 if(response.isSuccessful()) {
                     loginSuccessful();
