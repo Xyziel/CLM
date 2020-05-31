@@ -20,9 +20,9 @@ import okhttp3.OkHttpClient;
 public class MainActivity extends AppCompatActivity {
 
     private boolean permissionToRecordAccepted = false;
-    private boolean permissionToCourseLocation = false;
     private boolean permissionToInternet = false;
     private boolean permissionToAccessNetwork = false;
+    private boolean permissionToFineLocation = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +35,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void permissionRequest() {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO,
-           Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET, Manifest.permission.ACCESS_NETWORK_STATE
+           Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET, Manifest.permission.ACCESS_NETWORK_STATE,
+           Manifest.permission.ACCESS_COARSE_LOCATION
         }, 200);
     }
 
@@ -43,11 +44,11 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int code, String[] permissions, int[] grantResults) {
         if (code == 200) {
             permissionToRecordAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-            permissionToCourseLocation = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+            permissionToFineLocation = grantResults[1] == PackageManager.PERMISSION_GRANTED;
             permissionToInternet = grantResults[2] == PackageManager.PERMISSION_GRANTED;
             permissionToAccessNetwork = grantResults[3] == PackageManager.PERMISSION_GRANTED;
         }
-        if (!permissionToRecordAccepted && !permissionToCourseLocation && !permissionToAccessNetwork && !permissionToInternet) {
+        if (!permissionToRecordAccepted && !permissionToFineLocation && !permissionToAccessNetwork && !permissionToInternet) {
             finish();
         }
         else {

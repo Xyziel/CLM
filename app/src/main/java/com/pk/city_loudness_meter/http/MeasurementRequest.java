@@ -1,5 +1,10 @@
 package com.pk.city_loudness_meter.http;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.widget.Toast;
+
+import com.pk.city_loudness_meter.activities.DataActivity;
 import com.pk.city_loudness_meter.services.LocationService;
 import com.pk.city_loudness_meter.services.MediaRecorderService;
 import com.pk.city_loudness_meter.util.DeviceUtils;
@@ -9,6 +14,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -24,19 +31,21 @@ public class MeasurementRequest {
     private LocationService locationService;
     private OkHttpClient okHttpClient;
     private DeviceUtils deviceUtils;
+    private DataActivity dataActivity;
     private JSONArray dataList = new JSONArray();
     private boolean runTask = true;
     private Timer sendDataTimer, prepareDataTimer;
 
 
-    private final int SEND_DATA_PERIOD = 5 * 60 * 1000;
+    private final int SEND_DATA_PERIOD = 60 * 1000;
     private final int GET_DATA_PERIOD = 3 * 1000;
 
-    public MeasurementRequest(MediaRecorderService mediaRecorderService, OkHttpClient okHttpClient, LocationService locationService, DeviceUtils deviceUtils) {
+    public MeasurementRequest(MediaRecorderService mediaRecorderService, OkHttpClient okHttpClient, LocationService locationService, DeviceUtils deviceUtils, DataActivity dataActivity) {
         this.locationService = locationService;
         this.mediaRecorderService = mediaRecorderService;
         this.okHttpClient = okHttpClient;
         this.deviceUtils = deviceUtils;
+        this.dataActivity = dataActivity;
     }
 
     private void getData() {
@@ -47,6 +56,9 @@ public class MeasurementRequest {
             jsonObject.put("latitude", locationService.getLocation().getLatitude());
             jsonObject.put("magnitude", mediaRecorderService.getDb());
             dataList.put(jsonObject);
+            dataActivity.displayLocation(jsonObject.getDouble("latitude"), jsonObject.getDouble("longitude"));
+        } catch (NullPointerException e) {
+            dataActivity.displayLocalizationError();
         } catch (JSONException e) {
             android.util.Log.e("[MAIN]", "JSON Exception: " + android.util.Log.getStackTraceString(e));
         }
@@ -61,7 +73,9 @@ public class MeasurementRequest {
     }
 
     private void send() {
+        System.out.println(dataList.length());
         try {
+//            dataActivity.displayListLength(dataList);
             Call call = okHttpClient.newCall(prepareRequest());
             call.execute();
         } catch (IOException e) {
@@ -77,8 +91,8 @@ public class MeasurementRequest {
                 runTask = false;
                 if (dataList.length() > 0) {
                     send();
+                    clearData();
                 }
-                clearData();
                 runTask = true;
             }
         }, SEND_DATA_PERIOD, SEND_DATA_PERIOD);
